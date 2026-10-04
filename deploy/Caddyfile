@@ -1,0 +1,8 @@
+# Automatic HTTPS (free Let's Encrypt certificate) for your domain.
+{$DOMAIN} {
+	encode gzip
+	request_body {
+		max_size 20MB
+	}
+	reverse_proxy app:8000
+}

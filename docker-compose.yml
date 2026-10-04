@@ -1,0 +1,34 @@
+# Cloud / server deployment.
+#   docker compose up -d --build                    # app only, on port 8000
+#   DOMAIN=photos.example.com docker compose --profile https up -d --build   # + automatic HTTPS
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATA_DIR: /app/data
+      GOOGLE_SERVICE_ACCOUNT_FILE: /app/service-account.json
+      ALLOW_LOCAL_FOLDERS: "false"
+    volumes:
+      - ./data:/app/data
+      - ./service-account.json:/app/service-account.json:ro
+    ports:
+      - "8000:8000"
+
+  caddy:
+    image: caddy:2
+    profiles: ["https"]
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN=your.domain}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on: [app]
+
+volumes:
+  caddy_data:

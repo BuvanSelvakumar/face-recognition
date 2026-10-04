@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Find your photos</title>
+  <link rel="icon" href="/static/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- Loading -->
+<section id="v-loading" class="guest-wrap" style="padding-top:30vh"><div class="spinner"></div></section>
+
+<!-- Error / not found -->
+<section id="v-error" class="guest-wrap hidden">
+  <div class="card hero"><h1 style="font-size:30px">Hmm…</h1><p id="error-msg" class="muted"></p></div>
+</section>
+
+<!-- Still indexing -->
+<section id="v-wait" class="guest-wrap hidden">
+  <div class="card hero">
+    <div class="eyebrow">Almost there</div>
+    <h1 class="ev-name"></h1>
+    <p>The photographer is still preparing the photos. Please check back a little later.</p>
+    <button class="btn ghost" onclick="location.reload()">Check again</button>
+  </div>
+</section>
+
+<!-- Welcome / selfie -->
+<section id="v-start" class="guest-wrap hidden">
+  <div class="card hero">
+    <div class="eyebrow">Find your photos</div>
+    <h1 class="ev-name"></h1>
+    <p>Take a quick selfie and we'll show you every photo you appear in.</p>
+
+    <div id="pin-box" class="hidden" style="text-align:left;margin-bottom:16px">
+      <label for="pin">Event PIN <span class="muted">(printed on the QR card)</span></label>
+      <input id="pin" type="text" inputmode="numeric" autocomplete="off">
+    </div>
+
+    <label class="consent">
+      <input type="checkbox" id="consent">
+      <span>I agree to my selfie being used only to find my photos at this event. It is not saved.</span>
+    </label>
+
+    <div class="stack">
+      <button class="btn accent block" id="btn-camera">📷 Take a selfie</button>
+      <button class="btn ghost block" id="btn-upload">Upload a photo instead</button>
+    </div>
+    <input type="file" id="file-camera" accept="image/*" capture="user" class="hidden">
+    <input type="file" id="file-upload" accept="image/*" class="hidden">
+    <p id="start-err" class="err hidden"></p>
+    <p class="small muted" style="margin-top:20px">Tip: face the camera in good light, no sunglasses.</p>
+  </div>
+</section>
+
+<!-- Confirm selfie -->
+<section id="v-confirm" class="guest-wrap hidden">
+  <div class="card hero">
+    <h1 style="font-size:30px;margin-bottom:6px">Looking good!</h1>
+    <img id="selfie-img" class="selfie-preview" alt="Your selfie">
+    <div class="stack">
+      <button class="btn accent block" id="btn-search">Find my photos</button>
+      <button class="btn ghost block" id="btn-retake">Retake</button>
+    </div>
+    <p id="confirm-err" class="err hidden"></p>
+  </div>
+</section>
+
+<!-- Searching -->
+<section id="v-search" class="guest-wrap hidden" style="padding-top:22vh;text-align:center">
+  <div class="spinner"></div>
+  <p class="muted" style="margin-top:18px">Searching through the photos…</p>
+</section>
+
+<!-- Gallery -->
+<section id="v-gallery" class="gallery-wrap hidden">
+  <div class="gallery-head">
+    <div>
+      <h1 class="ev-name"></h1>
+      <div class="muted small" id="g-count"></div>
+    </div>
+    <div class="actions">
+      <a class="btn accent small" id="btn-zip">⬇ Download all</a>
+      <button class="btn ghost small" id="btn-more">+ Add another selfie</button>
+      <button class="btn ghost small" id="btn-share">Copy link</button>
+    </div>
+  </div>
+  <div id="grid" class="grid"></div>
+  <div id="g-empty" class="empty hidden">
+    <h2 style="font-size:26px;margin-bottom:8px">We couldn't find you yet</h2>
+    <p class="muted">Try another selfie: face the camera directly, in good light, without sunglasses or a mask.</p>
+    <button class="btn accent" id="btn-retry">Try another selfie</button>
+  </div>
+  <p class="small muted" id="g-expiry" style="text-align:center;margin-top:28px"></p>
+</section>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true">
+  <div class="lb-top">
+    <span id="lb-count" class="small"></span>
+    <div style="display:flex;gap:8px">
+      <a class="btn ghost small" id="lb-download">⬇ Download</a>
+      <button class="btn ghost small" id="lb-close" aria-label="Close">✕</button>
+    </div>
+  </div>
+  <div class="lb-img"><img id="lb-img" alt=""></div>
+  <button class="nav prev" id="lb-prev" aria-label="Previous">‹</button>
+  <button class="nav next" id="lb-next" aria-label="Next">›</button>
+</div>
+
+<script src="/static/guest.js"></script>
+</body>
+</html>

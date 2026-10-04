@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Photographer Admin</title>
+  <link rel="icon" href="/static/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="admin-wrap">
+  <div class="admin-head">
+    <div>
+      <div class="eyebrow">Photographer admin</div>
+      <h1>Wedding galleries</h1>
+    </div>
+    <button class="btn accent" id="btn-new">+ New event</button>
+  </div>
+
+  <form id="new-form" class="card panel hidden" autocomplete="off">
+    <h2>New event</h2>
+    <div class="form-grid">
+      <div class="full">
+        <label for="f-name">Event name</label>
+        <input id="f-name" type="text" placeholder="Priya &amp; Arjun · Wedding" required maxlength="120">
+      </div>
+      <div class="full">
+        <label>Photos are in</label>
+        <div class="seg" id="f-type">
+          <button type="button" data-v="drive" class="on">Google Drive folder</button>
+          <button type="button" data-v="local">Folder on this computer</button>
+        </div>
+      </div>
+      <div class="full">
+        <label for="f-source" id="f-source-label">Google Drive folder link</label>
+        <input id="f-source" type="text" required placeholder="https://drive.google.com/drive/folders/…">
+        <div class="hint" id="f-source-hint"></div>
+      </div>
+      <div>
+        <label for="f-pin">Guest PIN <span class="muted">(optional)</span></label>
+        <input id="f-pin" type="text" maxlength="12" placeholder="e.g. 2412">
+        <div class="hint">Printed on the QR card. Stops strangers who only have the link.</div>
+      </div>
+      <div>
+        <label for="f-days">Keep gallery for (days)</label>
+        <input id="f-days" type="number" min="1" max="730">
+        <div class="hint">After this, face data and thumbnails are deleted automatically. Your Drive is never touched.</div>
+      </div>
+      <div class="full" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn accent" type="submit" id="f-submit">Create &amp; start indexing</button>
+        <button class="btn ghost" type="button" id="f-cancel">Cancel</button>
+        <span id="f-err" class="err" style="margin:0"></span>
+      </div>
+    </div>
+  </form>
+
+  <div id="events"></div>
+  <div id="no-events" class="card panel hidden" style="text-align:center">
+    <h2>No events yet</h2>
+    <p class="muted">Upload a wedding's photos to a Drive folder, then click <b>New event</b>.</p>
+  </div>
+</div>
+<script src="/static/admin.js"></script>
+</body>
+</html>

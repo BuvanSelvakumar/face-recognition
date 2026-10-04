@@ -1,0 +1,13 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+deepface[tensorflow]>=0.0.100
+tensorflow>=2.16
+tf-keras>=2.16
+numpy>=1.26
+pillow>=10.4
+pillow-heif>=0.18
+qrcode[pil]>=7.4
+zipstream-ng>=1.7
+google-api-python-client>=2.140
+google-auth>=2.34
