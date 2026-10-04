@@ -73,6 +73,8 @@ label { display: block; font-weight: 500; font-size: 13px; margin: 0 0 6px; }
 .consent input { margin-top: 3px; accent-color: var(--accent); width: 18px; height: 18px; flex: none; }
 .stack { display: grid; gap: 10px; }
 .selfie-preview { width: 220px; height: 220px; border-radius: 50%; object-fit: cover; margin: 6px auto 20px; display: block; border: 4px solid var(--surface-2); box-shadow: var(--shadow); }
+.cam-box { width: 260px; height: 260px; margin: 0 auto; border-radius: 50%; overflow: hidden; background: #000; box-shadow: var(--shadow); }
+.cam-box video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); /* mirror, like a selfie */ }
 .err { color: var(--err); font-size: 14px; margin: 12px 0 0; }
 
 .gallery-wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px 48px; }

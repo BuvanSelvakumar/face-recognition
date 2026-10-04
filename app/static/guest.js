@@ -1,6 +1,6 @@
 (() => {
   const $ = (id) => document.getElementById(id);
-  const views = ["loading", "error", "wait", "start", "confirm", "search", "gallery"];
+  const views = ["loading", "error", "wait", "start", "camera", "confirm", "search", "gallery"];
   const show = (name) => views.forEach((v) => $("v-" + v).classList.toggle("hidden", v !== name));
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -59,12 +59,66 @@
     el.classList.toggle("hidden", !msg);
   }
 
-  function pickFile(input) {
-    if (!$("consent").checked) return startErr("Please tick the box above to continue.");
-    if (event.needs_pin && !$("pin").value.trim()) return startErr("Please enter the event PIN.");
+  function canStart() {
+    if (!$("consent").checked) return startErr("Please tick the box above to continue."), false;
+    if (event.needs_pin && !$("pin").value.trim()) return startErr("Please enter the event PIN."), false;
     startErr("");
+    return true;
+  }
+
+  function pickFile(input) {
+    if (!canStart()) return;
     input.value = "";
     input.click();
+  }
+
+  // Phones: the native front camera (via capture="user") is the best experience.
+  // Laptops/desktops ignore capture="user", so show a live camera in the page instead.
+  // Browsers only allow live camera on https:// or localhost; otherwise fall back to choosing a file.
+  const isPhone = matchMedia("(pointer: coarse)").matches;
+  let stream = null;
+
+  function stopCamera() {
+    if (stream) stream.getTracks().forEach((t) => t.stop());
+    stream = null;
+  }
+
+  async function takeSelfie() {
+    if (isPhone) return pickFile($("file-camera"));
+    if (!canStart()) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      toast("Live camera needs a secure (https) link, so please choose a photo instead");
+      return pickFile($("file-upload"));
+    }
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+    } catch (e) {
+      startErr(e.name === "NotAllowedError"
+        ? "Camera permission was blocked. Allow it in the browser's address bar, or upload a photo instead."
+        : "No camera found. Please upload a photo instead.");
+      return;
+    }
+    $("cam-video").srcObject = stream;
+    show("camera");
+  }
+
+  function snap() {
+    const v = $("cam-video");
+    if (!v.videoWidth) return;
+    const c = document.createElement("canvas");
+    c.width = v.videoWidth;
+    c.height = v.videoHeight;
+    c.getContext("2d").drawImage(v, 0, 0);
+    stopCamera();
+    c.toBlob((blob) => {
+      selfieBlob = blob;
+      $("selfie-img").src = URL.createObjectURL(blob);
+      $("confirm-err").classList.add("hidden");
+      show("confirm");
+    }, "image/jpeg", 0.92);
   }
 
   // Shrink the selfie on the phone before upload (faster on mobile data).
@@ -121,7 +175,9 @@
     }
   }
 
-  $("btn-camera").onclick = () => pickFile($("file-camera"));
+  $("btn-camera").onclick = takeSelfie;
+  $("btn-snap").onclick = snap;
+  $("btn-cam-cancel").onclick = () => { stopCamera(); show("start"); };
   $("btn-upload").onclick = () => pickFile($("file-upload"));
   $("file-camera").onchange = onFile;
   $("file-upload").onchange = onFile;
